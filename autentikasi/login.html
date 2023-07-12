@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        $(document).ready(function() {
+            $("form").submit(function(event) {
+                event.preventDefault(); // Mencegah pengiriman form secara default
+
+                // Mendapatkan data dari form
+                var email = $("input[name='email']").val();
+                var password = $("input[name='password']").val();
+
+                // Mengirim data ke login.php menggunakan Ajax
+                $.ajax({
+                    url: "login.php",
+                    method: "POST",
+                    data: {
+                        email: email,
+                        password: password
+                    },
+                    success: function(response) {
+                        if (response === "success") {
+                            // Redirect ke halaman admin.html jika berhasil login sebagai admin
+                            window.location.href = "../admin.php";
+                        } else if (response === "tamu") {
+                            // Redirect ke halaman tamu.html jika berhasil login sebagai tamu
+                            window.location.href = "../tamu.php";
+                        } else if (response === "error") {
+                            alert("Error: Invalid email or password");
+                        } else if (response === "not_registered") {
+                            alert("Error: User not registered");
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Error: " + error); // Menampilkan pesan error jika terjadi kesalahan pada server
+                    }
+                });
+            });
+        });
+
+        function handleCredentialResponse(response) {
+            // Mendapatkan credential dari Google Sign-In
+            const credential = response.credential;
+            
+            // Mengirim credential ke google_login.php menggunakan Ajax
+            $.ajax({
+                url: "google_login.php",
+                method: "POST",
+                data: {
+                    credential: credential
+                },
+                success: function(response) {
+                    if (response === "success") {
+                        // Redirect ke halaman admin.html jika berhasil login sebagai admin
+                        window.location.href = "../admin.php";
+                    } else if (response === "tamu") {
+                        // Redirect ke halaman tamu.html jika berhasil login sebagai tamu
+                        window.location.href = "../tamu.php";
+                    } else if (response === "error") {
+                        alert("Error: Invalid credential");
+                    } else if (response === "not_registered") {
+                        alert("Error: User not registered");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Error: " + error); // Menampilkan pesan error jika terjadi kesalahan pada server
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="col-md-4 mx-auto">
+            
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <img src="../img/logo.png" class="text-center" alt="Logo" style="height: 100px;">
+                </div>
+
+                <form>
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Login</h2>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" name="email" required class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" name="password" required class="form-control">
+                        </div>
+
+                        <input type="submit" value="Login" class="btn btn-primary">
+                        <a href="../register.html" type="submit" class="btn btn-success">Register</a>
+                    </div>
+                </form>
+
+                <div class="card-footer text-center">
+                    <div id="g_id_onload"
+                        
+                         data-client_id="389353906753-cr1041o0vcba6k6qq5s2s789ql1fk676.apps.googleusercontent.com" 
+                         data-callback="handleCredentialResponse">
+
+
+                        
+                    </div>
+                    <div class="g_id_signin" data-type="standard"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

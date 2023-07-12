@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18"></script>
+</head>
+<body>
+    <div class="container">
+
+        <div class="col-md-4 mx-auto">
+
+           
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <img src="img/logo.png" class="text-center" alt="Logo" style="height: 100px;" >
+                </div>
+        <form id="registerForm" method="POST">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Register</h2>
+            <div class="form-group">
+                <input type="text" name="email" placeholder="Email" required class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Username" required class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" required class="form-control">
+            </div>
+            <div class="form-group">
+                <select name="role" class="form-control">
+                    <option value="admin">Admin</option>
+                    <option value="tamu">Tamu</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+           <a  type="submit"  class="btn btn-success"href="login.html">Login</a>
+        </form>
+
+        </div>
+        
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#registerForm').submit(function(e) {
+                e.preventDefault(); // Mencegah submit form secara default
+
+                // Mengambil data dari formulir
+                var formData = $(this).serialize();
+
+                // Mengirim permintaan AJAX ke register.php
+                $.ajax({
+                    url: 'register.php',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Registration successful',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(function() {
+                                window.location.href = "login.html"; // Redirect ke halaman login setelah popup ditutup
+                            });
+                        } else if (response === 'error') {
+                            alert('Registration failed. Please try again.');
+                        } else if (response === 'exists') {
+                            alert('Email already registered.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
